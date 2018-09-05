@@ -25,9 +25,9 @@ In contrast compiled languages are typically analyzed and transformed by a compi
 
 #### On JavaScript, compilation and TypeScript
 
-Javascript is a compiled language because it uses JIT (just-in-time) compilation to compile JS source code in bytecode so it can be executed by the browser's JavaScript Engine. JIT compilation is when a program is compiled at runtime of a program rather than compiling prior to execution. JS is dynamically typed, so the developer does not need to declare each variable as a specific type. Instead dynamically-typed languages associate variable types with values rather than declared types.
+Javascript is a compiled language because it uses JIT (just-in-time) compilation to compile JS source code into bytecode so it can be executed by the browser's JavaScript Engine. JIT compilation is when a program is compiled at runtime of a program rather than compiling prior to execution. JS is dynamically typed, so the developer does not need to declare each variable as a specific type. Instead dynamically-typed languages associate variable types with values rather than declared types.
 
-TypeScript is a language that extends JavaScript with tpe annotations so the developer can have the benefists of static typing. TS compiles to JavaScript using the TypeScript compiler.
+TypeScript is a language that extends JavaScript with type annotations so the developer can have the benefits of static typing. TS compiles to JavaScript using the TypeScript compiler.
 
 ```typescript
 var age: number;
@@ -36,7 +36,7 @@ age = 100;
 // age = 'Peter' // will not compile
 ```
 
-Static typeing is actually optional is TS because the developer can assign variables as being of type 'any' as well. This allows you to take advantage of both static and dynamic typing.
+Static typing is actually optional is TS because the developer can assign variables as being of type 'any' as well. This allows you to take advantage of both static and dynamic typing.
 
 ```typescript
 var age: any;
@@ -49,15 +49,15 @@ age = "Peter"; // will compile
 
 These are two techniques for increasing the performace of our systems that are widely used today.
 
-Concurrant programs are able to execute multiple parts (i.e functions/methods...) of a program simultaneously on the same hardware. However, the difficulty is that all of these simultaneous procedures will be accessing the same memory (or same pool of objects) and variables at the same time. Writing concurrent programs is difficlt because all of tehse functions are accessing teh same pool of memory at the same time. As they are accessing teh same shared memory they are reading and writing from the shared variables. However the advantage of concurrency is greater performance. Moder computer architecture has been adding more 'cores' to computer processors. As more cores are added, we can run more concurrent code.
+Concurrant programs are able to execute multiple parts (i.e functions/methods...) of a program simultaneously on the same hardware. However, the difficulty is that all of these simultaneous procedures will be accessing the same memory (or same pool of objects) and variables at the same time. Writing concurrent programs is difficlt because all of these functions are accessing the same pool of memory at the same time. As they are accessing the same shared memory they are reading and writing from the shared variables. However the advantage of concurrency is greater performance. Modern computer architecture has been adding more 'cores' to computer processors. As more cores are added, we can run more concurrent code.
 
-Java provides a full concurrency model using Threads. A thread is like a process within a process. Recall that "In computing, a process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system, a process may be made up of multiple threads of execution that execute instructions concurrently" [http://learn-gevent-socketio.readthedocs.io/en/latest/general_concepts.html].
+Java provides a full concurrency model using **Threads.** A thread is like a process within a process. Recall that "In computing, a process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system, a process may be made up of multiple threads of execution that execute instructions concurrently" [http://learn-gevent-socketio.readthedocs.io/en/latest/general_concepts.html].
 
 A process is an executing instance of an application, and it contains the following resources:
 
 - an image of the executable machine code associated with the program
 - memory, which includes: executable code, process-specific data (input and output), call stack that keeps track of active subroutines and/or other events, the heap which holds intermediate computation data during run time
-- operating system descriptors of resources that are allocated to the process such as file descriptors (unix/linux) and handles (windows), dat sources and sinks
+- operating system descriptors of resources that are allocated to the process such as file descriptors (unix/linux) and handles (windows), data sources and sinks
 - security attributes (process owner and set of permissions, e.g. allowable operations)
 - processor state (context) such as registers and physical memory addressing
 
@@ -71,7 +71,7 @@ For more on threads and proccesses, visit the link above.
 
 Concurrency is concerned with managing access to shared state from different threads.
 
-Java implements concurrency using threads, but TypeScript and JavaScript do not. Instead these use asynchronous programming. TS and JS are single-threaded, non-blocking, asynchronous programming languages. The single-threaded aspect means only one statement at a time can be executed in a process. Blocking means that if the process encounters a slow statement, the rest of the program must wait until that statement finishes. TS and JS both provide behaviors that are Non-Blocking.
+Java implements concurrency using threads, but TypeScript and JavaScript do not. Instead these use asynchronous programming to simulate non-sequential data flow. **TS and JS are single-threaded, non-blocking, asynchronous programming languages.** The single-threaded aspect means only one statement at a time can be executed in a process. Blocking means that if the process encounters a slow statement, the rest of the program must wait until that statement finishes. TS and JS both provide behaviors that are Non-Blocking.
 
 Non-blocking behavior is great in the context of network requests, for example. A round-trip network request can take as long as the equivalent of 100 million other statements executing. So while that process is waiting for that network request to complete, the rest of the system is sitting idle when it could be getting other things done.
 
@@ -80,20 +80,27 @@ Async behavior (particularly for network or file I/O operations) gives JS its no
 There are 4 main parts to the platform that actually executes TS and JS code:
 
 - The call stack: This is an ordered set of statements. As functions execute, they are placed on the call stack. When they return (to physical memory address), these functions are popped off the stack, passing the execution back to the caller (function below).
-- Web APIs: This is the browser engine running the code or Nodejs if you are running a node process. In this space, asynchronous code is handled instead of in the call stack. So it runs in parallel with the functions on the call stack. When the asyc request is done executing, it passes the callback to the queue and invokes the callback.
-- Callback Queue: This is also an ordered set of statements that contains all callbacs assigned to async functions
-- The Event Loop: is in charge of checking the callback queue and if there is something on it, passing that statement (in the queue) to the call stack so it can execute.
 
-insert js platform image
+- Web APIs: This is the browser engine running the code or Nodejs if you are running a node process. In this space, asynchronous code is handled instead of in the call stack. So it runs in parallel with the functions on the call stack. When the asyc request is done executing, it passes the callback to the queue and invokes the callback.
+
+- Callback Queue: This is also an ordered set of statements that contains all callbacks assigned to async functions. When a JS `Promise` resolves for example, the Callback Queue pushes the callback assigned to that promise's `.then()` onto the call stack so it executes next.
+
+- The Event Loop: is in charge of checking the callback queue and if there is something on it, passing that statement (in the queue) to the call stack so it can execute (see previous).
+
+![JS Engine](https://github.com/pszujewski/edx-software-engineering/blob/master/js-platform.png)
 
 #### Processes of software development
 
-Waterfall Process: a classic methodology developed from traditional engineering fields.
+**Waterfall Process: a classic methodology developed from traditional engineering fields.**
 
 - Requirements phase: collect all the requirements for the system. This includes the specification document
+
 - Design: documentation that lays out the architecture of the project at a higher level, for example the classes, methods and functions needed for the system.
+
 - Implementation phase: consumes the design documentation to put the plan in place.
+
 - Verification team will come up with a set of test plans for testing the system.
+
 - Maintenance
 
 The one downfall of this process is that the is no feedback loop through the process.
@@ -110,27 +117,39 @@ Extreme programming (xp) is all about having a buildable system at all times. Al
 
 #### Scrum Process
 
-There is a running list of features to develop in what's known as the product backlog. For an individual 'sprint', the scrum master and development team create a sprint backlog during a planning process, and set a specific timeline by which that sprint will be completed. By the end of the sprint, you have a shippable product. The project owner then can evaluate output. The standup meeting is an important part of the process and ensures that everyone on the team is on track.
+There is a running list of features to develop in what's known as the **product backlog.** For an individual 'sprint', the scrum master and development team create a sprint backlog during a planning process, and set a specific timeline by which that sprint will be completed. By the end of the sprint, you have a shippable product. The project owner then can evaluate output. The standup meeting is an important part of the process and ensures that everyone on the team is on track.
 
 ### Module 2: Specifications
 
-Definition: Document that details what properties should the system we are going to build have? What behaviors do all stakeholders want the system to have? The engineering team must interpret this document to implement a design based on the spcifications developed in tandem with the product owner.
+Definition: Document that details what properties the system we are going to build should have? What behaviors do all stakeholders want the system to have? The engineering team must interpret this document to implement a design based on the spcifications developed in tandem with the product owner.
 
-A key part of developing a product specification is identifying the product requirements, which include concrete functional requirements and non-functional properties/requirements of the system. So for example, "user can log out" is a functional requirement, whereas "system should be intuitive and simple" is a non-functional property. Requirements themselves have properties and expectations attached to them: they should be complete, concise, precise and consistent. We wamt them to be consistent in that we don't want requirements to contradict each other.
+A key part of developing a product specification is identifying the product requirements, which include concrete functional requirements and non-functional properties/requirements of the system. So for example, "user can log out" is a functional requirement, whereas "system should be intuitive and simple" is a non-functional property. Requirements themselves have properties and expectations attached to them: they should be complete, concise, precise and consistent. We want them to be consistent in that we don't want requirements to contradict each other.
 
-The cycle for specifying requirements includes: Elicitation, Analysis, Reification, Validation, and then back to Elicitation. Reification refers to making abstract concepts real or concrete. So once a tentative model is elucidated from the requirements process, it can be mocked up for further verification: we can then examine the model to see if it's viable.
+The cycle for specifying requirements includes: Elicitation, Analysis, Reification, Validation, and then back to Elicitation. Reification refers to making abstract concepts real or concrete. So once a tentative model is elucidated from the requirements process, it can be mocked up for further verification. We can then examine the model to see if it's viable.
 
-Other than functional and non-functional requirements, there are also design contstraints: for example budgetary contraints or regulatory constraints. There are environmental constraints: software doesn't run in isolation, for example cloud service provider, etc. Finally we have preferences, which are an ordered list of the product owners/customers' preferred features.
+Other than functional and non-functional requirements, there are also design contstraints. For example budgetary contraints or regulatory constraints. There are environmental constraints since software doesn't run in isolation, for example cloud service provider, etc. Finally we have preferences, which are an ordered list of the product owners/customers' preferred features.
 
 #### User Stories
 
-help capture cohesion between customer, product and dev team. User stories have 5 main parts:
+**User stories help capture cohesion between customer, product and dev team, and they have 5 main parts.**
 
-- role-goal-benefit: who is going to benefit from this feature and what is it going to achieve? describe a specific role, an achievable goal, and the value that this goal might hold
-- Limitations
-- Definition of done: is the feature done, complete, and correct
-- engineering tasks: keep track of how this feature interacts with other systems. We want our definition of done to be easily verifiable so the client knows what the expect, and the person fulfilling the user story can be validated that they've completed the task. Therefore, we want this to be as clear as possible, without ambiguities.
-- effort estimate: overall cost of a feature
+1. Role-goal-benefit: who is going to benefit from this feature and what is it going to achieve? describe a specific role, an achievable goal, and the value that this goal might hold
+
+2. Limitations: What is needed and what are the constraints?
+
+3. Definition of done: is the feature done, complete, and correct?
+
+4. Engineering tasks: keep track of how this feature interacts with other systems. We want our definition of done to be easily verifiable so the client knows what to expect, and the person fulfilling the user story can be validated that they've completed the task. Therefore, we want this to be as clear as possible, without ambiguities.
+
+5. Effort estimate: overall cost of a feature
+
+**Example**
+
+1. As a prof, I want to create repositories so that my students can do their work
+2. Need: Repo names, student Ids
+3. Definition of done: I want to be able to run this using a single command, automated test cases
+4. Engineering note: use Github manager
+5. Cost estimate: 1.5 units/ days
 
 #### Invest - for creating user stories
 
@@ -140,14 +159,6 @@ Value: Provides meaningful value for the product.
 Estimable: Effective costing for the development of a feature
 Small: small features are easier to estimate, etc. user stories should be as small as possible
 Testability: Ensure it is testable
-
-Example of 5 main parts that build up a single user story:
-
-1. As a prof, I want to create repositories so that my students can do their work
-2. Need: Repo names, student Ids
-3. Definition of done: I want to be able to run this using a single command, automated test cases
-4. Engineering note: use Github manager
-5. Cost estimate: 1.5 units/ days
 
 #### Decomposing user stories - mario game example
 
@@ -167,13 +178,13 @@ Easy to take shortcuts on testing. But don't!
 
 Black-box testing only gives you documentation to guide your tests. White-box testing also gives you the code written there.
 
-White box testing - when you test the internals (the pieces that compose the system). We look at the internals to see how it's working. Based on internal implementation, we write tests
+**White box testing** is when you test the internals (the pieces that compose the system). We look at the internals to see how it's working. Based on internal implementation, we write tests.
 
-Block box testing - when you use the specification for a feature in order to write tests. You use the API signature and the specification for the feature to design test cases. You do not concern yourself with the source code or internal implementation.
+**Black box testing** is when you use the specification for a feature in order to write tests. You use the API signature and the specification for the feature to design test cases. You do not concern yourself with the source code or internal implementation.
 
 A test case evaluates a single executable test in your program.
 
-Unit tests check simple properties of a system. So unit tests focus on specific units of a software system, such as a self contained method. This is primary form of tests. It is good at isolating behavior/properties of the system. Big downfall is they don't tell you if the whole program work together. The main difficulty with unit tests is that they are not very good at simulating users.
+Unit tests check simple properties of a system. So unit tests focus on specific units of a software system, such as a self contained method. This is primary form of tests. It is good at isolating behavior/properties of the system. Big downfall is they don't tell you if the whole program works together. The main difficulty with unit tests is that they are not very good at simulating users.
 
 An integration test is about tying things together. Integration tests are less isolated than a unit test because they're implementing multiple parts of the system at once. They are broader than unit tests. Smoke tests are a subset of integration tests, and just a basic running of part of the system. They are a sanity check. (tests if units work together)
 
@@ -205,15 +216,15 @@ It is generally best-paractice to start with focusing on simple line-coverage, t
 
 An approach used to make a very large 'state space' more tractable that still ensures effective testing. You could also say this is input partitioning.
 
-For example, imagine you had a function called isGreater that received two TS numbers as inputs. These numbers could be positive or negative, and could be between -50 and 50. This is a large state space because there are a lot of possible different inputs that could be received here. Implementing equivalence class partitioning here would mean effectively choosing inputs for testing this large state space. So a good idea would be to definitely test the function if it received a positive number and a negative number, for example. One such test case is representative of the state space.
+For example, imagine you had a function called `isGreater` that received two TS numbers as inputs. These numbers could be positive or negative, and could be between -50 and 50. This is a large state space because there are a lot of possible different inputs that could be received here. Implementing equivalence class partitioning here would mean effectively choosing inputs for testing this large state space. So a good idea would be to definitely test the function if it received a positive number and a negative number, for example. One such test case is representative of the state space.
 
 In other words, "While we cannot test all possible inputs and outputs (which would create a huge state space), our goal is to choose a selection from each region to ascertain whether our system can handle many types of inputs. This narrows the scope of testing."
 
-Boundary value analysis is about testing edge cases: When we want to increase robustness, we want to look at how our system can handle unexpected inputs or circumstances. When we do boundary value analysis, we ensure that our system can graceflly handle input values that may have ambiguous effects (such as edge cases). We want to test values that are around the boundaries mentioned in the specification, as those detail different behaviours of our function.
+**Boundary value analysis** is about testing edge cases. When we want to increase robustness, we want to look at how our system can handle unexpected inputs or circumstances. When we do boundary value analysis, we ensure that our system can graceflly handle input values that may have ambiguous effects (such as edge cases). We want to test values that are around the boundaries mentioned in the specification, as those detail different behaviours of our function.
 
 #### Assertionas
 
-Popular organizational methods for test suites popularized by Java's JUnit
+Popular organizational methods for test suites were popularized by Java's JUnit library.
 
 Four-phase test: in which a test suite has a before, beforeEach, series of tests that test behavior (assertions on execution) and then an after phase for clean-up.
 
@@ -231,64 +242,78 @@ Testability is the practice of building your system and modifying your source co
 
 Testable code qualities: Controlability, Isolatability, Observability, Automatability
 
-Controlability is about ensuring that the code in question is testable in that is short and succint and does not require a lot of lines of code to test. The key in non-controllable code in the object-oriented world is too many 'new' statements in the constructor of a given class. Controllability is also about being able to invoke code witha mock state. Can you pass in mock parameters given the source code, or is the source code written in such a way as to make that very difficult? for exmaple, does the code use external libraries within it's constructor function, such as jQuery querying the DOM, which is hard to mock.
+**Controlability** is about ensuring that the code in question is testable in that is short and succint and does not require a lot of lines of code to test. The key in non-controllable code in the object-oriented world is too many 'new' statements in the constructor of a given class. Controllability is also about being able to invoke code with a mock state. Can you pass in mock parameters given the source code, or is the source code written in such a way as to make that very difficult? for exmaple, does the code use external libraries within it's constructor function, such as jQuery querying the DOM, which is hard to mock.
 
-Observability requires that the code under test produces an observable state that we can assert against. For example, if the internal state of an object is modified by the function under test, and that state is a private field, does the class under test include a 'getField' method that would allow us to observe the state of that field?
+**Observability** requires that the code under test produces an observable state that we can assert against. For example, if the internal state of an object is modified by the function under test, and that state is a private field, does the class under test include a `getField()` method that would allow us to observe the state of that field?
 
-Isolatability is about the ability to observe a defect and isolate/identify that defect's root cause. Methods that are too large make isolating defects within them very difficult. Isolateability focuses on being able to test the behaviour of a specific method or function in isolation. This means that we want all other factors to be controlled or predictable
+**Isolatability** is about the ability to observe a defect and isolate/identify that defect's root cause. Methods that are too large make isolating defects within them very difficult. Isolateability focuses on being able to test the behaviour of a specific method or function in isolation. This means that we want all other factors to be controlled or predictable
 
-Automatability: Are the tests written in such a way that it is possible to automate them. Automatability is concerned with being able to programmatically invoke both tests suites and code so that it is easy to run a test suite. If a set of tests can be invoked with minimal human intervention, they are easier to run, and can be run more often.
+**Automatability** asks if the tests are written in such a way that it is possible to automate them. Automatability is concerned with being able to programmatically invoke both tests suites and code so that it is easy to run a test suite. If a set of tests can be invoked with minimal human intervention, they are easier to run and can therefore be run more often.
 
 ### High-Level Design
 
 A note on abstraction: Too much abstraction makes understanding and reading the system very difficult. Too little makes it unmanageable and unflexible.
 
 - Language Constructs: Enable developers to focus on task intent instead of execution context. Examples include: methods, function, Promises.
+
 - High-level top-down decomposition: We start with a high-level abstract description and add more and more details to it over time.
+
 - Encapsulation: separate the data from the implementation that operates on that data.
+
 - Diagrams: an example of a structural diagram would be a Class diagram, and an example of a behavioral diagram would be a sequence diagram. Structural diagrams highlight the structural composition of a system, and behavioral diagrams highlight the dynamic flow of a system.
+
 - Deploymnt diagrams are structural diagrams that overlay class diagrams to provide information about where specific classes or modules exist at runtime.
+
 - State Machine diagrams help us reason about how our application state can transition from one state to another.
+
+**Deployment diagram example**
+
+![Deployment Diagram](https://github.com/pszujewski/edx-software-engineering/blob/master/deployment-diagram.png)
 
 #### APIs and design
 
-Refers to Application Programming Interface(s), or interfaces for source code elements. As developer it is the interface with which you work with a module, library, or external source code. API is the prgrammatic surface of our applications.
+Refers to Application Programming Interface(s), or interfaces for source code elements. As a developer, this refers to the interface with which you work with a module, library, or any other external source code. API is the prgrammatic surface of our applications.
 
 **High-level API design principles**
 
-- Do one thing: APIs should be focused on performing one task well.
-- Never expose internal implementation details
-- APIs should be as small as possible. It should be focused and only do what is most necessary
-- API usability: It should be easy to read and undestand API documentation
+1. Do one thing: APIs should be focused on performing one task well.
+2. Never expose internal implementation details
+3. APIs should be as small as possible. It should be focused and only do what is most necessary
+4. API usability: It should be easy to read and undestand API documentation
 
 **Low-Level API design principles**
 
 - Avoid long parameter lists, and avoid two parameters of the same type being sequential in the list. It would be easy for the API consumer to accidentally mix up these two parameters.
+
 - APIs should return really descriptive objects when consumed.
+
 - Avoid exceptional returns. If an API consumer expects an API to return a User object, that API should always return an Object, even if the user is not found. For example, we don't want to return null and lead to a null pointer exception.
+
 - Handle exceptional circumstances and user mistakes.
+
 - Favor immutability: When we return an object to a client of an API, we don't want the client of our API to be able to alter the interal state of an object.
+
 - Favor private code (private class, fields, etc.): unless there is a thought-out reason for making something public, keep it private.
 
 Steps for designing an API: Start with a short spec, solicit feedback, create concrete prototypes (at least 3 different usages of the API), develop documentation with usage examples.
 
-Properties of API usability is determined by its visibility, model, mapping, feedback (regarding, for ex, when an API is used incorrectly). Visibility can be measured by asking the question, how long does it take a developer to learn how to use an API. How visibile are the important methods? If actions are well mapped within your API, then error rates should be lower since developers will be more likely to take the actions that help them complete their desired task.
+Properties of API usability is determined by its visibility, model, mapping, feedback (regarding, for example, when an API is used incorrectly). Visibility can be measured by asking the question, how long does it take a developer to learn how to use an API? How visibile are the important methods? If actions are well mapped within your API, then error rates should be lower since developers will be more likely to take the actions that help them complete their desired task.
 
 #### Remote Procedure Call (RPC)
 
 It's often the case that we want to execute some code that isn't going to run on our local machine, so instead in a cloud-based service or maybe another machine in our local network. In other words, we want to call some remote code and get a response back. We want our local machine to request something from a remote service, and then get a response back.
 
-REST stands for Representation State Transfer and is a software architecture for distributed hypermedia applications. This works well when the web is thought of as a collection of independent and remote services. This architecture allows for these services to not have to hold any state regarding their clients. The core design decisions are based on these pillars: simple, reliable, scalable, extensible. Statelessness is a core architectural constraint for REST services. It makes REST based services much easier to scale. We are talking about application state here, and not resource state. Resource state is obviously important here.
+**REST stands for Representation State Transfer** and is a software architecture for distributed hypermedia applications. This works well when the web is thought of as a collection of independent and remote services. This architecture allows for these services to not have to hold any state regarding their clients. The core design decisions are based on these pillars: simple, reliable, scalable, extensible. **Statelessness** is a core architectural constraint for REST services. It makes REST based services much easier to scale. We are talking about application state here, and not resource state. Resource state is obviously important here.
 
-#### Uniform Resource Identifiers
+#### Uniform Resource Identifiers (URI)
 
 URLs (web browser/ web pages access) are a subset of all possible URIs (URLs are in fact URIs). URIs provide a simple and transparent mechanism for naming remote resources. REST-based services all use standard access methods for parameterizing requests being made from the client to the remote service (get, post, put, delete...).
 
 REST-based services also generate intermediate representations of their internal data in a format that is consumable by the client. So for JavaScript applications in the web, that means JSON. This in essence enforces information-hiding from the client.
 
-The nouns in a REST-based system correspond to the reources that your system allows you to access and manipulate. We define theses using URIs. So for example: `/users/alice` corresponds to a single user Alice in our system. Other than passing data in the URI itself, the request headers also can pass parameters. Responses from REST service contains a header and a body.
+The nouns in a REST-based system correspond to the reources that your system allows you to access and manipulate. We define theses using URIs. So for example: `/users/alice` might correspond to a single user Alice in our system. Other than passing data in the URI itself, the request headers also can pass parameters. Responses from REST service contain a header and a body.
 
-Headers typically contain metadata about the request itself, such as the status code, which indicates success, failure, or other conditions. Most common formats for the response body include JSON, HTML, or XML. These formats are used instead of plain text because plain text isn't self-descriptive or useful programmatically.
+Headers typically contain metadata about the request itself, such as the status code, which indicates success, failure, or some other condition. Most common formats for the response body include JSON, HTML, or XML. These formats are used instead of plain text because plain text isn't self-descriptive or useful programmatically.
 
 #### Versioning an API
 
@@ -298,11 +323,11 @@ There are several ways to do this. PATH: One is to build it into the URIs explic
 
 Captures how closely related or connected two program classes are. It can be problematic and is closely related to how evolvable and maintainable our codebase is. You do not usually want classes that are tightly coupled. It adds particular challenges around re-usability of classes. We do not want classes that are too closely bound. It is also easier to understand and reason about a system that is made up of independent classes.
 
-Does the coupling arise because of similar data being stored and manipulated by different classes? Stamp coupling occurs when two classes are coupled through data structures, meaning they depend on the same data structures (publicly defined types). Global coupling occurs when global variables are used. Content coupling occurs when the internal state is modified by another unit. Content coupling represents a break down in information hiding and encapsulation.
+Does the coupling arise because of similar data being stored and manipulated by different classes? **Stamp coupling** occurs when two classes are coupled through data structures, meaning they depend on the same data structures (publicly defined types). Stamp coupling is coupling that involves reliance on data structures, as described here. In this case, since you are dealing with small, well-defined interfaces, this type of coupling is not usually problematic.
 
-Stamp coupling is coupling that involves reliance on data structures, as described here. In this case, since you are dealing with small, well-defined interfaces, this type of coupling is not problematic.
+Two other types of coupling that are problematic are Global coupling and Content coupling. **Global coupling** occurs when global variables are used. **Content coupling** occurs when the internal state is modified by another unit. Content coupling represents a break down in information hiding and encapsulation.
 
-Coupling is however a natural part of building software and is even required to some degree for performing complex tasks. Cohesion is a key measure for evaluating how focused a unit of execution is in our system. Cohesion ultimately measures how well units of our system interact together. In the Object-oriented world
+Coupling is however a natural part of building software and is even required to some degree for performing complex tasks. Cohesion is a key measure for evaluating how focused a unit of execution is in our system. Cohesion ultimately measures how well units of our system interact together.
 
 #### Cohesion
 
@@ -310,15 +335,15 @@ How well do the fields and methods in a class go together/ work together to perf
 
 Cohesion is about ensuring our abstractions and program design is good. You must ask, does the class do one thing? It is important to know that coupling to a degree is unavoidable and you will have some coupling within a cohesive class. Three main types of cohesion: functional cohesion, sequential cohesion, communication cohesion, and proceduarl cohesion (when it must follow a specific order. Procedural cohesion is less desirable.
 
-Example of sequential cohesion: the sequence of operations is important. Without being assigned a price, an item cannot be assigned a price category. Without a price category, an item cannot be added to the correct collection of items. This kind of Sequential Cohesion is not problematic in this case, because it is necessary for the system to perform the desired task.
+**Sequential cohesion** occurs when the sequence of operations is important. Without being assigned a price, an item cannot be assigned a price category. Without a price category, an item cannot be added to the correct collection of items. This kind of Sequential Cohesion is not problematic in this case, because it is necessary for the system to perform the desired task.
 
 Coincidental cohesion is not really cohesion, and is basically a lack of 'good' cohesion. In general, system design should be highly cohesive and loosely coupled.
 
 Example of temporal cohesion, which is when code is only related by timing:
 
-You examine a method named prepareLocationForClosure that is designed to be invoked in the case where a department store location needs to prepare to permanently close down. Within this method, there are many calls to other methods such as cancelAllRestockingOrders, activateSalePricesOnAllItems, transferAllWarehouseEmployees, etc.
+You examine a method named `prepareLocationForClosure` that is designed to be invoked in the case where a department store location needs to prepare to permanently close down. Within this method, there are many calls to other methods such as `cancelAllRestockingOrders`, `activateSalePricesOnAllItems`, `transferAllWarehouseEmployees`, etc.
 
-The methods invoked by transferWareHouseItems are all diverse in their responsibilities. The only thing that these methods have in common is that they need to be invoked around the same time of execution, so they are an example of Temporal Cohesion. This is a problematic type of cohesion.
+The methods invoked by `transferWareHouseItems` are all diverse in their responsibilities. The only thing that these methods have in common is that they need to be invoked around the same time of execution, so they are an example of Temporal Cohesion. This is a problematic type of cohesion.
 
 #### Design guidance
 
@@ -326,15 +351,15 @@ Goals: system should be easy to understand, amenable to new features, and easy t
 
 The SOLID Principles give a useful lens for reasoning about decision decisions:
 
-- Single-responsability principle: a module should do one thing. See strategy pattern (small and independent algorithms), command pattern (abstract actions an object takes), and state pattern (abstract away how an object behaves given different states at runtime). This dirves us to have large numbers of classes, but each class is easier to understand and repair.
+1. **The Single-responsability principle** states that a module should do one thing. See strategy pattern (small and independent algorithms), command pattern (abstract actions an object takes), and state pattern (abstract away how an object behaves given different states at runtime). This dirves us to have large numbers of classes, but each class is easier to understand and repair.
 
-- The Open/Closed principle says our systems should be open to extension but closed to modification. This means that the system can get new features with modifying existing features. We don't want to accidentally modify existing classes just while adding new features or classes.
+2. **The Open/ Closed principle** says our systems should be open to extension but closed to modification. This means that the system can get new features with modifying existing features. We don't want to accidentally modify existing classes just while adding new features or classes.
 
-- Liskov Substitution principle: Any Object in a program should be interchangeable with any other object in the same program that has the exact same parent type. The parent being the type that is the super class to the objects in question.
+3. **The Liskov Substitution principle** states that any Object in a program should be interchangeable with any other object in the same program that has the exact same parent type. The parent being the type that is the super class to the objects in question.
 
-- Interface Segregation principle: Clients should not be forced to rely on interfaces that they do not use. So instances of the interface should always use or need all the present methods and field for their interface.
+4. **The Interface Segregation principle** states that Clients should not be forced to rely on interfaces that they do not use. So instances of the interface should always use or need all the present methods and field for their interface.
 
-- Dependency Inversion: classes should depend on abstractions, and NOT on implementations. This principle makes classes much more reusable. So methods should take interfaces in their parameters and always return interfaces.
+5. **Dependency Inversion** states that classes should depend on abstractions, and not on implementations. This principle makes classes much more reusable. So methods should take interfaces in their parameters and always return interfaces.
 
 ### Low-Level Design
 
@@ -348,21 +373,21 @@ The patterns all have pros and cons to them. There are down-sides to every patte
 - Structural: these help us structure our systems in ways that help us avoid future evolutionary patterns
 - Behavioral: these make it so we can more easily add new behaviors to our systems at runtime.
 
-Main pillars:
+#### 3 main pillars for good architectural design
 
-- Encapsulate What Varies: design a system in such a way that it is easily extendable. This is also about building the appropriate abstractions. This makes it easier for future developers to add new functionality. Often it can be really challenging to anticipate future needs. Avoid unnecessary abstractions however.
+- **Encapsulate What Varies** means design a system in such a way that it is easily extendable. This is also about building the appropriate abstractions. This makes it easier for future developers to add new functionality. Often it can be really challenging to anticipate future needs. Avoid unnecessary abstractions however.
   Benefits:
 
 1. Makes it easier to extend systems
 2. it helps future bug fixes to be more localized
 
-- Designing to interfaces helps to decouple our implementation from our design. The interface definitions define the system's high-level vocabulary.
+- **Designing to interfaces** helps to decouple our implementation from our design. The interface definitions define the system's high-level vocabulary.
   Benefits:
 
 1. it improves the reusability of code in a system
 2. Decouples implementation from design
 
-- Favor composition over inheritance: this makes your code more dynamic at runtime, and makes it easier to add new features moving forward. This design guideline is somewhat at odds with other patterns because the others stress inheritance. Code that is inheritance-based is much more brittle than code that is composition-based. Code that is coupled based on composition benefits from seeing changes in parent-types to children percolate down. Composition drives you to have much smaller classes. This gives you a lot of flexibility.
+- **Favor composition over inheritance** to make your code more dynamic at runtime, and makes it easier to add new features moving forward. This design guideline is somewhat at odds with other patterns because the others stress inheritance. Code that is inheritance-based is much more brittle than code that is composition-based. Code that is coupled based on composition benefits from seeing changes in parent-types to children percolate down. Composition drives you to have much smaller classes. This gives you a lot of flexibility.
   Benefits:
 
 1. Makes it easier to add new features (open/closed)
@@ -392,11 +417,17 @@ In this pattern, there is a Context Object with a `setState` method and a field 
 
 The state pattern relies on composition. Using the mario game example, imagine we have a `Mario` object. Calling `Mario.hit()` calls `this.state.hit()` and `this.state` holds one of the possible `MarioState` objects. Each `MarioState` implements the `MarioState` interface which includes a `hit` method. The `hit` method is implemented in each state class that implements the `MarioState` object. So if the state of mario is small, large, or invincible (if he has gotten a star), then the actual `hit` implementation varies because each instance of the `MarioState` implements it. Thus the functionality is delegated to the State objects
 
-#### State and strategy: conclusion
+![State design pattern](https://github.com/pszujewski/edx-software-engineering/blob/master/state-design-pattern-2.png)
+
+#### State and Strategy: conclusion
 
 They are very similar. Both use inheritance to enable extension and 'openness' to extension. Both aim to isolate clients from future changes and keep the clients un-modified when adding additional functionality. Such that all you need to do is add a new state class that implements the state interface.
 
 However their intent is entirely different, the state pattern is all about enabling state transition dynamically at runtime, whereas the strategy pattern is not as dynamic. The algorithm is set at the beginning of executing and it stays the same. The strategy pattern allows you to easily add new algorithms to your system without having to change the client classes that implement those strategies.
+
+**Example of the state design pattern**
+
+![State design pattern example](https://github.com/pszujewski/edx-software-engineering/blob/master/state-design-pattern.png)
 
 #### Façade design pattern
 
@@ -415,6 +446,8 @@ The Facade pattern does come in conflict a bit with the Single-Responsability pr
 The decorator pattern allows us to add arbitrary combinations of behaviors to individual instances of objects. Rather than adding them to every instance of a class. It allows instances of objects to be wrapped with additional behavioral responsability. The decorator pattern is very good at Single-responsability.
 
 Recall that the Decorator allows us to augment an object's responsibilities dynamically at runtime. Recall that a decorated object is oblivious to the kinds of wrappers/decorators that it has. Each decorator is dealt with one layer at a time during execution.
+
+![Decorator Overview](https://github.com/pszujewski/edx-software-engineering/blob/master/Decorator-pattern-overview.png)
 
 This is a classic example of composition over inheritance. While the pattern does use inheritance, the power of the pattern comes from inheritance. It's structure is very similar to the composit pattern. The intent of the decorator pattern is to wrap new behavors on instances of an object. Each Component has a wrap field, which allows the behaviors to be forwarded onto the encapsulated objects. DEcorators should never be aware of their context.
 
@@ -441,13 +474,17 @@ let c = new ConcreteObject(); // implements 'action' method
     c.action();
 ```
 
-`action` might also be `render`. Imagine you have a GameFrame for Mario and then a Lava level and an Underwater level that both extend GameFrame. If you want to decorate that GameFrame with background images, like lightning flashes, and rain storms and optional mixes of the two. Lightning, Storm, and GameFrame all must implement the same Component interface with one key cascading, composed method i.e `render`. you might see:
+`action()` might also be `render()`. Imagine you have a GameFrame for Mario and then a Lava level and an Underwater level that both extend GameFrame. If you want to decorate that GameFrame with background images, like lightning flashes, and rain storms and optional mixes of the two. Lightning, Storm, and GameFrame all must implement the same Component interface with one key cascading, composed method i.e `render()`. you might see:
 
 ```javascript
 let gf = new GameFrame();
 gf = new Lightning(new Storm(gf)); // where Lightning and Storm are decoraters
 gf.render(); // calls lightning's render, which calls its wrapped render, and so forth.
 ```
+
+**Decorator Example**
+
+![Decorator pattern example](https://github.com/pszujewski/edx-software-engineering/blob/master/Decorator-patern-example.png)
 
 #### Model View Controller (MVC)
 
